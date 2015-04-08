@@ -413,6 +413,7 @@
 				7ACD4D281AB9058C00E6713D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7ACD4D291AB9058C00E6713D /* Build configuration list for PBXNativeTarget "FlipTests" */ = {
 			isa = XCConfigurationList;
@@ -421,6 +422,7 @@
 				7ACD4D2B1AB9058C00E6713D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
