@@ -26,7 +26,7 @@ class GameScene: SKScene {
             let location = touch.locationInNode(self)
             
             let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
+            let 💁 = "oh yeah, emojis in code, totally needed this feature 🎩"
             sprite.xScale = 0.5
             sprite.yScale = 0.5
             sprite.position = location
