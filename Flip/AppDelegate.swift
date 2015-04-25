@@ -3,7 +3,7 @@
 //  Flip
 //
 //  Created by Matthew Stoton on 2015-03-17.
-//  Copyright (c) 2015 Sacina. All rights reserved.
+//  Copyright (c) 2016 Sacina. All rights reserved.
 //
 import UIKit
 
