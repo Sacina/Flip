@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A0B065F1AD9BD16006322A3 /* AssetManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0B065E1AD9BD16006322A3 /* AssetManagement.swift */; };
+		7A0B06611AD9BD28006322A3 /* Balls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0B06601AD9BD28006322A3 /* Balls.swift */; };
+		7A17947C1AE6187800294FC8 /* blackball.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A1794791AE6187800294FC8 /* blackball.png */; };
+		7A17947D1AE6187800294FC8 /* blackball@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A17947A1AE6187800294FC8 /* blackball@2x.png */; };
+		7A17947E1AE6187800294FC8 /* blackball@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7A17947B1AE6187800294FC8 /* blackball@3x.png */; };
 		7ACD4D091AB9058C00E6713D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACD4D081AB9058C00E6713D /* AppDelegate.swift */; };
 		7ACD4D0B1AB9058C00E6713D /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 7ACD4D0A1AB9058C00E6713D /* GameScene.sks */; };
 		7ACD4D0D1AB9058C00E6713D /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ACD4D0C1AB9058C00E6713D /* GameScene.swift */; };
@@ -28,6 +33,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7A0B065E1AD9BD16006322A3 /* AssetManagement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssetManagement.swift; sourceTree = "<group>"; };
+		7A0B06601AD9BD28006322A3 /* Balls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balls.swift; sourceTree = "<group>"; };
+		7A1794791AE6187800294FC8 /* blackball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blackball.png; path = "../../../Dropbox/Sacina/Flip 14 Assets/blackball.png"; sourceTree = "<group>"; };
+		7A17947A1AE6187800294FC8 /* blackball@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "blackball@2x.png"; path = "../../../Dropbox/Sacina/Flip 14 Assets/blackball@2x.png"; sourceTree = "<group>"; };
+		7A17947B1AE6187800294FC8 /* blackball@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "blackball@3x.png"; path = "../../../Dropbox/Sacina/Flip 14 Assets/blackball@3x.png"; sourceTree = "<group>"; };
 		7ACD4D031AB9058C00E6713D /* Flip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ACD4D071AB9058C00E6713D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7ACD4D081AB9058C00E6713D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -60,6 +70,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A1794781AE6183300294FC8 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				7A17947F1AE6188C00294FC8 /* Black Ball */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		7A17947F1AE6188C00294FC8 /* Black Ball */ = {
+			isa = PBXGroup;
+			children = (
+				7A1794791AE6187800294FC8 /* blackball.png */,
+				7A17947A1AE6187800294FC8 /* blackball@2x.png */,
+				7A17947B1AE6187800294FC8 /* blackball@3x.png */,
+			);
+			name = "Black Ball";
+			sourceTree = "<group>";
+		};
 		7ACD4CFA1AB9058C00E6713D = {
 			isa = PBXGroup;
 			children = (
@@ -81,9 +109,12 @@
 		7ACD4D051AB9058C00E6713D /* Flip */ = {
 			isa = PBXGroup;
 			children = (
+				7A1794781AE6183300294FC8 /* Assets */,
 				7ACD4D081AB9058C00E6713D /* AppDelegate.swift */,
 				7ACD4D0A1AB9058C00E6713D /* GameScene.sks */,
 				7ACD4D0C1AB9058C00E6713D /* GameScene.swift */,
+				7A0B065E1AD9BD16006322A3 /* AssetManagement.swift */,
+				7A0B06601AD9BD28006322A3 /* Balls.swift */,
 				7ACD4D0E1AB9058C00E6713D /* GameViewController.swift */,
 				7ACD4D101AB9058C00E6713D /* Main.storyboard */,
 				7ACD4D131AB9058C00E6713D /* Images.xcassets */,
@@ -199,8 +230,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ACD4D171AB9058C00E6713D /* LaunchScreen.xib in Resources */,
+				7A17947D1AE6187800294FC8 /* blackball@2x.png in Resources */,
 				7ACD4D141AB9058C00E6713D /* Images.xcassets in Resources */,
+				7A17947E1AE6187800294FC8 /* blackball@3x.png in Resources */,
 				7ACD4D0B1AB9058C00E6713D /* GameScene.sks in Resources */,
+				7A17947C1AE6187800294FC8 /* blackball.png in Resources */,
 				7ACD4D121AB9058C00E6713D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,6 +254,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ACD4D0D1AB9058C00E6713D /* GameScene.swift in Sources */,
+				7A0B065F1AD9BD16006322A3 /* AssetManagement.swift in Sources */,
+				7A0B06611AD9BD28006322A3 /* Balls.swift in Sources */,
 				7ACD4D0F1AB9058C00E6713D /* GameViewController.swift in Sources */,
 				7ACD4D091AB9058C00E6713D /* AppDelegate.swift in Sources */,
 			);
