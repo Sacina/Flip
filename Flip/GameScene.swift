@@ -20,37 +20,49 @@ class GameScene: SKScene {
     Ex, Image preloading will go into AssetManagement, 
 
 */
-    
+    enum Direction {
+        case North
+        case South
+        case East
+        case West
+    }
    
     //MARK: Properties
     //
-    let gridsize = 11
-    let gridspace = 5
+    var gridWidth: Int
+    var gridCount: Int
+    let gridSpace = 5
     var lastUpdateInterval: Double = 0.0
+    var updateInterval: Double
+    var ballGrid = [Ball?]()
+    var currentDirection: Direction
     var center: Int {
         get {
-            return ((gridsize / 2) + 1)
+            return (gridCount / 2)
         }
     }
-    var ballArray = [Ball?]()
+    
     /*
     override init(size: CGSize) {
         
         
-        ballArray = Array<Ball?>(count: 11, repeatedValue: Ball?()) //Array<Ball> is the same as [Ball]
+        ballGrid = Array<Ball?>(count: 11, repeatedValue: Ball?()) //Array<Ball> is the same as [Ball]
         println("size init")
         
         super.init(size: size)
     }*/
     
     required init?(coder aDecoder: NSCoder) {
-        ballArray = Array<Ball?>(count: 11, repeatedValue: Ball?()) //Array<Ball> is the same as [Ball]
+        currentDirection = .South
+        updateInterval = 2.5
+        gridWidth = 11
+        gridCount = gridWidth * gridWidth
+        
+        ballGrid = Array<Ball?>(count: gridCount, repeatedValue: Ball?()) //Array<Ball> is the same as [Ball]
+        
         lastUpdateInterval = 0.0
         super.init(coder: aDecoder)
     }
-    
-    
-
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
@@ -67,25 +79,84 @@ class GameScene: SKScene {
         //spawns new balls, calls gameover if it can't
         let newBall = Ball(imageNamed: "blackball")
         //assert(self.childNodeWithName("ballPit") != nil, "null")
-        if (self.childNodeWithName("BallPit") != nil) {
-            println("found ballpit")
-        }
         let ballPit = self.childNodeWithName("BallPit")!
         ballPit.addChild(newBall)
-        if (ballArray[center] == nil) {
-            ballArray[center] = newBall
-            println("added ball")
+        if (ballGrid[center] == nil) {
+            ballGrid[center] = newBall
+            
         } else {
             gameOver()
         }
+        
+        dropBall(center)
     }
     
-    func dropBall() {
-        //tries tomove a single ball down a space
+    func dropBall(index: Int) {
+        //tries tomove a single ball down a space in the grid
+        /*if on left edge: index % gridwidth == 0
+        if on right edge: index % gridwidth == gridwidth - 1
+        I hate magic numbers so might refactor this later
+        */
+       // if (ballGrid[index]?.falling == false) {
+            switch currentDirection {
+            case .North:
+                let position = index - gridWidth
+                if (position > 0) {
+                    if (ballGrid[position] == nil) {
+                        ballGrid[position] = ballGrid[index]
+                        ballGrid[index] = nil
+                    }
+                }
+                println("North")
+            case .South:
+                let position = index + gridWidth
+                if (position < gridCount) {
+                    if (ballGrid[position] == nil) {
+                        ballGrid[position] = ballGrid[index]
+                        ballGrid[index] = nil
+                    }
+                }
+                println("South")
+            case .East:
+                let position = index - 1
+                if (index % gridWidth != 0) {
+                    if (ballGrid[position] == nil) {
+                        ballGrid[position] = ballGrid[index]
+                        ballGrid[index] = nil
+                    }
+                }
+                println("East")
+                
+            case .West:
+                let position = index + 1
+                if (index % gridWidth != gridWidth - 1) {
+                    if (ballGrid[position] == nil) {
+                        ballGrid[position] = ballGrid[index]
+                        ballGrid[index] = nil
+                    }
+                }
+                println("West")
+            default:
+                assertionFailure("No direction specified")
+                
+            }
+          //  ballGrid[index]?.falling = true
+       // }
     }
     
     func dropAllBalls() {
-        //tries to drop all balls
+        //tries to move all balls down a space
+        for index in 0..<ballGrid.count {
+            dropBall(index)
+        }
+    }
+    
+    func printArray() {
+        for column in 0..<11 {
+            for row in 0..<11 {
+                println(ballGrid[row])
+            }
+        }
     }
     
     func gameOver() {
@@ -116,7 +187,11 @@ class GameScene: SKScene {
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         var timeSinceLast = currentTime - lastUpdateInterval
-        lastUpdateInterval = currentTime
+        
+        
+        if (timeSinceLast >= updateInterval) {
+            lastUpdateInterval = currentTime
+        }
         //println("timeSinceLast\(timeSinceLast) , lastUpdateInterval \(lastUpdateInterval) , currentTime \(currentTime)")
 /*
         the whole point of actions was so we dno't have to manually move things, but we could here if needed, that would be the second approach I'd try though. for now we will simply use this to call dropAllBalls 
