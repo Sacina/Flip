@@ -18,13 +18,38 @@ class GameScene: SKScene {
     
     Going to do a lot of things lazily and later refactor it into subclasses and protocols
     Ex, Image preloading will go into AssetManagement, 
+    
+    Important Notes:
+    The orientation of the grid is fairly important
+    if its a 3x3 it would be
+    6 7 8
+    3 4 5
+    0 1 2
+    
+    truthfully I don't think it matters which way its oriented as long as 0, the first element in the grid
+    is visualized as being on the bottom so that physically a ball at 0 in the array in on the bottom of 
+    the screen
+    
+    actually this reveals a flaw in this algorithm. 0 is on the bottom because the bottom needs to be checked
+    first, but when the orientation changes the order of falling will no longer be correct for fully half the orientations
+    ex:
+     <- if this is portrait imagine it becoming right landscape, the checking order is fine because it still moves bottom to top, but imagine it flipping to left landscape, now it would be checking top to bottom
+    portrait and right landscape need to start at 8, upside down portrait and left landscape need to start at 0
+    
+    0 1 2   2 5 8
+    3 4 5   1 4 7
+    6 7 8   0 3 6
+    
+    6 3 0   8 7 6
+    7 4 1   5 4 3
+    8 5 2   2 1 0
 
 */
     enum Direction {
-        case North
-        case South
-        case East
-        case West
+        case PortraitUpsideDown
+        case Portrait
+        case LandscapeRight
+        case LandscapeLeft
     }
    
     //MARK: Properties
@@ -53,7 +78,7 @@ class GameScene: SKScene {
     }*/
     
     required init?(coder aDecoder: NSCoder) {
-        currentDirection = .South
+        currentDirection = .Portrait
         updateInterval = 2.5
         gridWidth = 11
         gridCount = gridWidth * gridWidth
@@ -71,8 +96,33 @@ class GameScene: SKScene {
         myLabel.fontSize = 65;
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         
+        //UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "detectOrientation",
+            name:UIDeviceOrientationDidChangeNotification,
+            object:nil)
+        
         spawnBall()
         self.addChild(myLabel)
+    }
+    
+    func detectOrientation() {
+        switch UIDevice.currentDevice().orientation {
+        case .Portrait:
+            currentDirection = .Portrait
+            println("Portrait")
+        case .LandscapeLeft:
+            currentDirection = .LandscapeLeft
+            println("LandscapeLeft")
+        case .LandscapeRight:
+            currentDirection = .LandscapeRight
+            println("LandscapeRight")
+        case .PortraitUpsideDown:
+            currentDirection = .PortraitUpsideDown
+            println("PortraitUpsideDown")
+        default:
+            println(UIDevice.currentDevice().orientation.rawValue)
+        }
     }
     
     func spawnBall() {
@@ -96,10 +146,13 @@ class GameScene: SKScene {
         /*if on left edge: index % gridwidth == 0
         if on right edge: index % gridwidth == gridwidth - 1
         I hate magic numbers so might refactor this later
+        
+        Also very little point in not directly tapping UIDevice.currentDevice().orientation
+        so I may change this later
         */
-       // if (ballGrid[index]?.falling == false) {
+        if (ballGrid[index]?.falling == false) {
             switch currentDirection {
-            case .North:
+            case .PortraitUpsideDown:
                 let position = index - gridWidth
                 if (position > 0) {
                     if (ballGrid[position] == nil) {
@@ -108,7 +161,7 @@ class GameScene: SKScene {
                     }
                 }
                 println("North")
-            case .South:
+            case .Portrait:
                 let position = index + gridWidth
                 if (position < gridCount) {
                     if (ballGrid[position] == nil) {
@@ -117,7 +170,7 @@ class GameScene: SKScene {
                     }
                 }
                 println("South")
-            case .East:
+            case .LandscapeRight:
                 let position = index - 1
                 if (index % gridWidth != 0) {
                     if (ballGrid[position] == nil) {
@@ -127,7 +180,7 @@ class GameScene: SKScene {
                 }
                 println("East")
                 
-            case .West:
+            case .LandscapeLeft:
                 let position = index + 1
                 if (index % gridWidth != gridWidth - 1) {
                     if (ballGrid[position] == nil) {
@@ -140,15 +193,26 @@ class GameScene: SKScene {
                 assertionFailure("No direction specified")
                 
             }
-          //  ballGrid[index]?.falling = true
-       // }
+            ballGrid[index]?.falling = true
+        }
     }
     
     func dropAllBalls() {
         //tries to move all balls down a space
-        for index in 0..<ballGrid.count {
-            dropBall(index)
+        //this is an incredibly unsexy bit of code fix later
+        //the grid must be traversed in different order based on orientation
+        if (currentDirection == .Portrait || currentDirection == .LandscapeRight)
+        {
+            for index in ballGrid.count-1...0 {
+                dropBall(index)
+            }
+        } else {
+            for index in 0..<ballGrid.count {
+                dropBall(index)
+            }
         }
+        
+        
     }
     
     func printArray() {
@@ -166,7 +230,8 @@ class GameScene: SKScene {
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         /* Called when a touch begins */
-        
+        println(UIDevice.currentDevice().orientation.rawValue)
+        /*
         for touch in (touches as! Set<UITouch>) {
             let location = touch.locationInNode(self)
             
@@ -181,7 +246,7 @@ class GameScene: SKScene {
             sprite.runAction(SKAction.repeatActionForever(action))
             
             self.addChild(sprite)
-        }
+        }*/
     }
     
     override func update(currentTime: CFTimeInterval) {
