@@ -64,7 +64,7 @@ class Ball: SKSpriteNode {
     
     convenience init(imageNamed name: String) {
         self.init()
-        let texture = SKTexture(imageNamed: "blackball")
+        let texture = SKTexture(imageNamed: name)
         self.texture = texture
         self.size = texture.size()
     }

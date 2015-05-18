@@ -36,6 +36,8 @@ class GameScene: SKScene {
      <- if this is portrait imagine it becoming right landscape, the checking order is fine because it still moves bottom to top, but imagine it flipping to left landscape, now it would be checking top to bottom
     portrait and right landscape need to start at 8, upside down portrait and left landscape need to start at 0
     
+    0 1 2 3 4 5 6 7 8 9 10 11
+    
     0 1 2   2 5 8
     3 4 5   1 4 7
     6 7 8   0 3 6
@@ -90,12 +92,12 @@ class GameScene: SKScene {
     }
     
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
+        /* Setup your scene here
         let myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "Hello, World!";
         myLabel.fontSize = 65;
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        
+        */
         //UIDevice.currentDevice().beginGeneratingDeviceOrientationNotifications()
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "detectOrientation",
@@ -103,7 +105,6 @@ class GameScene: SKScene {
             object:nil)
         
         spawnBall()
-        self.addChild(myLabel)
     }
     
     func detectOrientation() {
@@ -127,10 +128,11 @@ class GameScene: SKScene {
     
     func spawnBall() {
         //spawns new balls, calls gameover if it can't
-        let newBall = Ball(imageNamed: "blackball")
+        let newBall = Ball(imageNamed: "redball")
         //assert(self.childNodeWithName("ballPit") != nil, "null")
         let ballPit = self.childNodeWithName("BallPit")!
         ballPit.addChild(newBall)
+        newBall.position = CGPointMake(0, 0)
         if (ballGrid[center] == nil) {
             ballGrid[center] = newBall
             
@@ -138,7 +140,30 @@ class GameScene: SKScene {
             gameOver()
         }
         
-        dropBall(center)
+        let newBall2 = Ball(imageNamed: "blueball")
+        ballPit.addChild(newBall2)
+        ballGrid[center + gridWidth] = newBall2
+        newBall2.position = CGPointMake(0, 58)
+        printGrid()
+        
+    }
+    
+    func printGrid() {
+        for index in 0..<ballGrid.count {
+            if (index % gridWidth == 0) { println() }
+            //print(index)
+            if ballGrid[index] == nil { print("0") }
+            if ballGrid[index] != nil {
+                if ballGrid[index]?.falling == false {
+                    print("1")
+                    
+                }
+                else if ballGrid[index]?.falling == true {
+                    print("2")
+                }
+            }
+            
+        }
     }
     
     func dropBall(index: Int) {
@@ -151,6 +176,7 @@ class GameScene: SKScene {
         so I may change this later
         */
         if (ballGrid[index]?.falling == false) {
+            //ballGrid[index]?.falling = true
             switch currentDirection {
             case .PortraitUpsideDown:
                 let position = index - gridWidth
@@ -160,19 +186,22 @@ class GameScene: SKScene {
                         ballGrid[index] = nil
                     }
                 }
-                println("North")
+                println("up")
             case .Portrait:
                 let position = index + gridWidth
                 if (position < gridCount) {
                     if (ballGrid[position] == nil) {
                         ballGrid[position] = ballGrid[index]
                         ballGrid[index] = nil
+                        ballGrid[position]?.position.y -= 50
+                        println("moved")
                     }
                 }
-                println("South")
-            case .LandscapeRight:
+                println("down")
+            case .LandscapeLeft:
                 let position = index - 1
                 if (index % gridWidth != 0) {
+                //if (index % gridWidth != gridWidth - 1) {
                     if (ballGrid[position] == nil) {
                         ballGrid[position] = ballGrid[index]
                         ballGrid[index] = nil
@@ -180,20 +209,21 @@ class GameScene: SKScene {
                 }
                 println("East")
                 
-            case .LandscapeLeft:
+            case .LandscapeRight:
                 let position = index + 1
                 if (index % gridWidth != gridWidth - 1) {
+                //if (index % gridWidth != 0) {
                     if (ballGrid[position] == nil) {
                         ballGrid[position] = ballGrid[index]
                         ballGrid[index] = nil
                     }
                 }
-                println("West")
+                println("left")
             default:
                 assertionFailure("No direction specified")
                 
             }
-            ballGrid[index]?.falling = true
+            
         }
     }
     
@@ -201,27 +231,31 @@ class GameScene: SKScene {
         //tries to move all balls down a space
         //this is an incredibly unsexy bit of code fix later
         //the grid must be traversed in different order based on orientation
+        
         if (currentDirection == .Portrait || currentDirection == .LandscapeRight)
         {
-            for index in ballGrid.count-1...0 {
-                dropBall(index)
+            for (var index = ballGrid.count-1; index >= 0; index--) {
+                if (ballGrid[index] != nil) {
+                    dropBall(index)
+                }
             }
         } else {
-            for index in 0..<ballGrid.count {
-                dropBall(index)
+            for (var index = 0; index < ballGrid.count; index++) { //index in 0..<ballGrid.count {
+                if (ballGrid[index] != nil) { //not 100% sure this check is needed
+                    dropBall(index)
+                }
             }
         }
-        
         
     }
     
-    func printArray() {
-        for column in 0..<11 {
-            for row in 0..<11 {
-                println(ballGrid[row])
-            }
-        }
+    func moveBalls() {
+        //move the balls physically if they're flagged to move
+        //temporarily just moving them instantly for testing
+        //actions later
     }
+    
+    
     
     func gameOver() {
         //end game if a ball already exists at the spawn point
@@ -229,8 +263,9 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        /* Called when a touch begins */
-        println(UIDevice.currentDevice().orientation.rawValue)
+        //println(UIDevice.currentDevice().orientation.rawValue)
+        dropAllBalls()
+        printGrid()
         /*
         for touch in (touches as! Set<UITouch>) {
             let location = touch.locationInNode(self)
@@ -256,6 +291,7 @@ class GameScene: SKScene {
         
         if (timeSinceLast >= updateInterval) {
             lastUpdateInterval = currentTime
+            //code here happenes every updateInterval
         }
         //println("timeSinceLast\(timeSinceLast) , lastUpdateInterval \(lastUpdateInterval) , currentTime \(currentTime)")
 /*
